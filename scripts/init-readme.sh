@@ -1,16 +1,5 @@
+\
 #!/usr/bin/env bash
-##############################################################################
-#
-# Script: init-readme.sh
-#
-# Description:
-#   Create or refresh a standardized README.md inside one or more directories.
-#
-# Usage:
-#   init-readme.sh DIRECTORY [DIRECTORY ...]
-#
-##############################################################################
-
 set -Eeuo pipefail
 
 SCRIPT_NAME=$(basename "$0")
@@ -20,9 +9,6 @@ usage() {
     cat <<USAGE
 Usage:
   $SCRIPT_NAME DIRECTORY [DIRECTORY ...]
-
-Example:
-  $SCRIPT_NAME 08-Canonical-Knowledge 09-Architecture
 USAGE
 }
 
@@ -32,10 +18,10 @@ write_readme() {
     local title
     local today
 
-    if [[ ! -d "$directory" ]]; then
+    [[ -d "$directory" ]] || {
         printf 'ERROR: directory not found: %s\n' "$directory" >&2
         return 1
-    fi
+    }
 
     title=$(basename "$directory")
     today=$(date +%F)
@@ -64,13 +50,12 @@ EOF
 }
 
 main() {
-    local directory
-
-    if (($# == 0)); then
+    (($# > 0)) || {
         usage
         exit 1
-    fi
+    }
 
+    local directory
     for directory in "$@"; do
         write_readme "$directory"
     done
